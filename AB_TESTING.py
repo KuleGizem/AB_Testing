@@ -130,18 +130,19 @@ df.groupby("Group").agg({"Purchase": "mean"})
 
 # Normallik Varsayımı
 
+# H0: Normal dağılım varsayımı sağlanmaktadır.
+# H1:..sağlanmamaktadır.
+
 test_stat, pvalue = shapiro(df.loc[df["Group"] == "control", "Purchase"])
 print('Test Stat = %.4f, p-value = %.4f' % (test_stat, pvalue))
 
-# p = 0.5891 hipotez red edilemez
+# p = 0.5891 h0 red edilemez. yani normallik varsayımı sağlanmaktadır.
 
 test_stat, pvalue = shapiro(df.loc[df["Group"] == "test", "Purchase"])
 print('Test Stat = %.4f, p-value = %.4f' % (test_stat, pvalue))
 
-# p = 0.1541 hipotez red edilemez
+# p = 0.1541 HO red edilemez. yani normallik varsayımı sağlanmaktadır.
 
-# Aslında burada direkt mannwhitneyu 'ya geçmemiz lazım normallik varsayımı sağlanmadığı
-# için ama varyans homojenliğine de bakmamız isteniyor.
 
 # Varyans Homojenliği
 
@@ -152,17 +153,20 @@ print('Test Stat = %.4f, p-value = %.4f' % (test_stat, pvalue))
 
 # p = 0.1083
 
-# varyans homojenliği de sağlanmıyor
+# varyans homojenliği de sağlanmaktadır
 
 # Adım 2: Normallik Varsayımı ve Varyans Homojenliği sonuçlarına göre uygun testi seçiniz
 
 
-test_stat, pvalue = mannwhitneyu(df.loc[df["Group"] == "control", "Purchase"],
-                                 df.loc[df["Group"] == "test", "Purchase"].dropna())
+test_stat, pvalue = ttest_ind(df.loc[df["Group"] == "control", "Purchase"],
+                              df.loc[df["Group"] == "test", "Purchase"],
+                              equal_var=True)
 
 print('Test Stat = %.4f, p-value = %.4f' % (test_stat, pvalue))
 
-# p = 0.4617
+
+
+# p = 0.3493
 
 # Adım 3: Test sonucunda elde edilen p_value değerini göz önünde bulundurarak kontrol ve test grubu satın alma
 # ortalamaları arasında istatistiki olarak anlamlı bir fark olup olmadığını yorumlayınız.
@@ -176,7 +180,7 @@ print('Test Stat = %.4f, p-value = %.4f' % (test_stat, pvalue))
 
 # Adım 1: Hangi testi kullandınız, sebeplerini belirtiniz.
 
-# Varsayımlar sağlanmadığı için mann whitney u testini kullandık. ( non-parametrik test)
+# Varsayımlar sağlandığı için tttestini kullandık. ( parametrik test)
 
 
 # Adım 2: Elde ettiğiniz test sonuçlarına göre müşteriye tavsiyede bulununuz.
